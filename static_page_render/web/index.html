@@ -46,24 +46,42 @@
       </nav>
 
       <div class="container">
-        <table class="table">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Patient Name</th>
-              <th scope="col">Age</th>
-              <th scope="col">Predicted Type</th>
-              <th scope="col">Hematologists 1</th>
-              <th scope="col">Hematologists 1</th>
-              <th scope="col">Chief Hematologist</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Fetching data......</th>
-            </tr>
-          </tbody>
-        </table>
+        <p class="h3">Speech Controls</p>
+        <button
+          class="btn btn-outline-success"
+          type="button"
+          id="startRecognition"
+          onclick="startRecognition()"
+        >
+          Start Recognition
+        </button>
+        <button
+          class="btn btn-outline-danger disabled"
+          type="button"
+          id="stopRecognition"
+          onclick="stopRecognition()"
+        >
+          Stop Recognition
+        </button>
+      </div>
+      <div class="container mt-4">
+        <p class="h3">Recognized Text</p>
+        <div class="form-floating mb-4">
+          <textarea
+            class="form-control mt-2"
+            placeholder="Start speaking to see the transcript here...."
+            id="speechRecognitionTextAreaId"
+            style="height: 250px"
+          ></textarea>
+        </div>
+        <p class="h6">
+          Total Words:
+          <span class="badge bg-light text-dark" id="storyWordCountId">0</span>
+        </p>
+        <button class="btn btn-danger" onclick="clearStoryText()">Clear</button>
+      </div>
+      <div class="container mt-2">
+        <p class="mt-6 danger diagnostics"><em>…diagnostic messages</em></p>
       </div>
     </div>
 
@@ -186,6 +204,6 @@
       <!-- Copyright -->
     </footer>
 
-    <script src="speak_out?name=index.js"></script>
+    <script src="speak_out?name=index.js&code=6f0UgR95lyiL8NDGt6Dyx6JnnoZ32a7Jlq3RVSdxyHzDAzFu8zugeA=="></script>
   </body>
 </html>
