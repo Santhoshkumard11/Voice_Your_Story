@@ -74,16 +74,11 @@ function startRecognition() {
   console.log("Ready to recognize story text.");
   stopRecognitionId.className = "btn btn-danger";
   startRecognitionId.className = "btn btn-success disabled";
-  if (TranscribeCounter != 0) {
-    speechRecognitionTextAreaId.value += ".";
-  }
-  if (TranscribeCounter == 0) {
-    speechRecognitionTextAreaId.value = "";
-  }
 }
 
 function stopRecognition() {
   recognition.stop();
+  speechRecognitionTextAreaId.value += ".";
   console.log("Stopped to recognize story text.");
   stopRecognitionId.className = "btn btn-outline-danger disabled";
   startRecognitionId.className = "btn btn-outline-success";
@@ -99,4 +94,25 @@ function clearStoryText() {
 function updateStoryWordCount() {
   storyWordCountId.innerText =
     speechRecognitionTextAreaId.value.split(" ").length;
+}
+
+function publishTheStory() {
+  var currentDomain = "window.location.origin";
+  var urlToHit = `${currentDomain}/api/generate_story`;
+  var data = { storyText: speechRecognitionTextAreaId.value };
+
+  try {
+    const response = fetch(urlToHit, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = response.json();
+    console.log("Success:", result);
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
