@@ -11,7 +11,13 @@ const stopRecognitionId = document.getElementById("stopRecognition");
 const speechRecognitionTextAreaId = document.getElementById(
   "speechRecognitionTextAreaId"
 );
+const diagnosticMessageId = document.getElementById("diagnosticMessageId");
 var TranscribeCounter = 0;
+
+var ErrorNoCharInStory =
+  "Type or narrate at least CharCount more characters to your story before submitting";
+
+var MinStoryCharCount = 200;
 
 window.onload = function () {
   var copyrightId = document.getElementById("copyright");
@@ -53,20 +59,21 @@ window.onload = function () {
       }
     } catch {
       console.error("Error while getting the transcript.");
+      showToast("Error while getting the transcript.", "warning");
     }
   };
 
   recognition.onnomatch = function (event) {
-    diagnostic.textContent = "I didn't recognise that color.";
+    showToast("Can't recognize the audio - speak again!", "warning");
   };
 
   recognition.onerror = function (event) {
-    diagnostic.textContent = "Error occurred in recognition: " + event.error;
+    showToast("Error occurred in recognition: " + event.error, "warning");
   };
 };
 
 function updateTextArea(text) {
-  speechRecognitionTextAreaId.value += text;
+  speechRecognitionTextAreaId.value += text + " ";
 }
 
 function startRecognition() {
@@ -96,23 +103,55 @@ function updateStoryWordCount() {
     speechRecognitionTextAreaId.value.split(" ").length;
 }
 
+function showToast(text, color) {
+  var toastBody = document.getElementById("toastBody");
+  toastBody.innerHTML = text;
+
+  var toastDiv = document.getElementById("toastDiv");
+
+  toastDiv.className = `toast align-items-center text-white bg-${color}`;
+
+  $(".toast").toast("show");
+}
+
 function publishTheStory() {
-  var currentDomain = "window.location.origin";
+  var currentDomain = window.location.origin;
   var urlToHit = `${currentDomain}/api/generate_story`;
+
+  if (speechRecognitionTextAreaId.value.length < MinStoryCharCount) {
+    var errorText = ErrorNoCharInStory.replace(
+      "CharCount",
+      MinStoryCharCount - speechRecognitionTextAreaId.value.length
+    );
+    diagnosticMessageId.innerText = errorText;
+    showToast(errorText, "warning");
+    return;
+  }
+
   var data = { storyText: speechRecognitionTextAreaId.value };
 
   try {
-    const response = fetch(urlToHit, {
+    fetch(urlToHit, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    });
-
-    const result = response.json();
-    console.log("Success:", result);
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        showToast("Submitted story!", "success");
+        console.log("Success:", data);
+      })
+      .catch(function (err) {
+        console.error("Error:", err);
+        showToast("Error while trying to parse the output!", "warning");
+      });
   } catch (error) {
-    console.error("Error:", error);
+    console.log(`Error while trying to generate story - ${error}`);
+    diagnosticMessageId.innerText = "Unable to generate story!";
+    showToast("Unable to generate story!!!", "danger");
   }
 }

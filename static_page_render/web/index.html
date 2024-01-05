@@ -31,6 +31,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   </head>
 
   <body style="background-color: #c4d7ec">
@@ -81,35 +82,35 @@
         <button class="btn btn-danger" onclick="clearStoryText()">Clear</button>
       </div>
       <div class="container mt-2">
-        <p class="mt-6 danger diagnostics"><em>…diagnostic messages</em></p>
+        <button class="btn btn-success" onclick="publishTheStory()">
+          Publish
+        </button>
+      </div>
+      <div class="container mt-2">
+        <p class="mt-6 danger diagnostics" id="diagnosticMessageId">
+          <em>…diagnostic messages</em>
+        </p>
       </div>
     </div>
 
     <!-- Toast Message -->
     <div
-      aria-live="assertive"
+      class="toast align-items-center"
       role="alert"
+      aria-live="assertive"
       aria-atomic="true"
-      style="position: relative; min-height: 200px"
+      id="toastDiv"
+      data-bs-autohide="false"
+      style="position: absolute; top: 7%; right: 0"
     >
-      <div
-        class="toast"
-        style="position: absolute; top: 0; right: 0"
-        data-autohide="false"
-      >
-        <div class="toast-header">
-          <strong class="mr-auto">Updated the table!!! </strong>
-          <small>1 sec ago</small>
-          <button
-            type="button"
-            class="ml-2 mb-1 close"
-            data-dismiss="toast"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body">Retrieving Data from Cosmos DB</div>
+      <div class="d-flex">
+        <div class="toast-body" id="toastBody"></div>
+        <button
+          type="button"
+          class="btn-close me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
       </div>
     </div>
 
