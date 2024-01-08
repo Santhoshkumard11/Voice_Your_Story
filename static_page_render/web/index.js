@@ -99,8 +99,15 @@ function clearStoryText() {
 }
 
 function updateStoryWordCount() {
-  storyWordCountId.innerText =
-    speechRecognitionTextAreaId.value.split(" ").length;
+  var splittedText = speechRecognitionTextAreaId.value.split(" ");
+  var splittedTextLength = splittedText.length;
+
+  if (splittedTextLength == 1 && splittedText[0] == "") {
+    storyWordCountId.innerText = 0;
+  } else {
+    storyWordCountId.innerText =
+      speechRecognitionTextAreaId.value.split(" ").length;
+  }
 }
 
 function showToast(text, color) {
