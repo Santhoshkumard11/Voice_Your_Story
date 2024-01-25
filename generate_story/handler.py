@@ -5,7 +5,9 @@ from generate_story.llm_helper import generate_complete_story_body_from_llm
 from generate_story.utils import (
     create_twist,
     create_story,
+    get_story,
     patch_story,
+    patch_twist,
     publish_twist,
     format_twists_text,
 )
@@ -52,8 +54,11 @@ def handle_generate_story(story_text):
     level_4_twist_2 = formatted_twists.get("1_1_2_1")
 
     response_l1_t1 = create_twist(story_hash_id, level_1_twist_1)
+    _ = patch_twist(response_l1_t1.get("hashId"))
     response_l1_t2 = create_twist(story_hash_id, level_1_twist_2)
+    _ = patch_twist(response_l1_t2.get("hashId"))
     response_l1_t3 = create_twist(story_hash_id, level_1_twist_3)
+    _ = patch_twist(response_l1_t3.get("hashId"))
 
     response_l2_t1 = create_twist(response_l1_t1.get("hashId"), level_2_twist_1)
     response_l2_t2 = create_twist(response_l1_t2.get("hashId"), level_2_twist_2)
@@ -66,9 +71,14 @@ def handle_generate_story(story_text):
     _ = publish_twist(story_hash_id)
     logging.info("Successfully published story")
 
+    story_details = get_story(story_hash_id)
+    story_summary = story_details.get("path")[0].get("summary")
+
+    story_url = f"https://story3.com/story_about+{story_summary}"
+
     return json.dumps(
         {
             "message": "Successfully published the story",
-            "story_link": "",
+            "story_link": story_url,
         }
     )

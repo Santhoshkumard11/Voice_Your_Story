@@ -130,6 +130,8 @@ function publishTheStory() {
     diagnosticMessageId.innerText = errorText;
     showToast(errorText, "warning");
     return;
+  } else {
+    diagnosticMessageId.innerText = "";
   }
 
   var data = { storyText: speechRecognitionTextAreaId.value };
@@ -148,6 +150,7 @@ function publishTheStory() {
       .then(function (data) {
         showToast("Submitted story!", "success");
         console.log("Success:", data);
+        updateStoryUrl(data["story_link"]);
       })
       .catch(function (err) {
         console.error("Error:", err);
@@ -158,4 +161,8 @@ function publishTheStory() {
     diagnosticMessageId.innerText = "Unable to generate story!";
     showToast("Unable to generate story!!!", "danger");
   }
+}
+
+function updateStoryUrl(storyLink) {
+  diagnosticMessageId.innerHTML = `<b> <a href="${storyLink}" target="_blank">Story Link</a> </b>`;
 }

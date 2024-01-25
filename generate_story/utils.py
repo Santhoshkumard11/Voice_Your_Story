@@ -74,7 +74,7 @@ def create_story(story_title, story_body):
         payload["body"] = story_body
 
         response = send_request("post", endpoint=endpoint, payload=payload)
-    except Exception as e:
+    except Exception:
         logging.exception("Error in create story")
 
     return response
@@ -101,7 +101,7 @@ def create_twist(parent_hash, twist_body):
             )
         else:
             logging.info("No twist body")
-    except Exception as e:
+    except Exception:
         logging.exception(f"Error in create twist - hash - {parent_hash}")
     return response
 
@@ -114,7 +114,7 @@ def publish_twist(hash_id):
         endpoint = endpoint.replace("hashId", hash_id)
 
         response = send_request("post", endpoint=endpoint)
-    except Exception as e:
+    except Exception:
         logging.exception(f"Error in publish twist - hash id {hash_id}")
 
     return response
@@ -132,9 +132,37 @@ def patch_story(hash_id, genre, tags):
         payload["genre"] = genre
         payload["tags"] = tags
         response = send_request("patch", endpoint=endpoint, payload=payload)
-    except Exception as e:
+    except Exception:
         logging.exception(
             f"Error in patch_story - hash id - {hash_id} - genre - {genre} - tags - {tags}"
         )
+
+    return response
+
+
+def patch_twist(hash_id):
+    response = {}
+    try:
+        endpoint = STORY3_API_ENDPOINTS.get("patch_twist").get("endpoint")
+
+        endpoint = endpoint.replace("hashId", hash_id)
+
+        payload = STORY3_API_ENDPOINTS.get("patch_twist").get("payload")
+        response = send_request("patch", endpoint=endpoint, payload=payload)
+    except Exception:
+        logging.exception(f"Error in patch twist - hash id - {hash_id}")
+
+    return response
+
+
+def get_story(hash_id):
+    response = {}
+    try:
+        endpoint = STORY3_API_ENDPOINTS.get("get_story").get("endpoint")
+
+        endpoint = endpoint.replace("hashId", hash_id)
+        response = send_request("get", endpoint=endpoint)
+    except Exception:
+        logging.exception(f"Error in get story - hash id - {hash_id}")
 
     return response

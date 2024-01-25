@@ -23,6 +23,15 @@ STORY3_API_ENDPOINTS = {
         "endpoint": f"{STORY3_HOST_NAME}/api/{STORY3_API_VERSION}/stories/hashId",
         "payload": {"genre": "string", "tags": ["string"]},
     },
+    "patch_twist": {
+        "endpoint": f"{STORY3_HOST_NAME}/api/{STORY3_API_VERSION}/twists/hashId",
+        "payload": {
+            "monetization_option": "free",
+        },
+    },
+    "get_story": {
+        "endpoint": f"{STORY3_HOST_NAME}/api/{STORY3_API_VERSION}/stories/hashId",
+    },
 }
 
 STORY_OUTPUT_TEMPLATE = """
