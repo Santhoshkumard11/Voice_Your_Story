@@ -55,7 +55,7 @@ def send_request(method="get", endpoint="", payload=None):
 
 
 def format_llm_output(response):
-    for char_ in ["\n", "'", "```json", "```"]:
+    for char_ in ["'", "```json", "```"]:
         response = response.replace(char_, "")
 
     response = json.loads(response)

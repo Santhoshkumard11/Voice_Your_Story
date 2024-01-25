@@ -131,7 +131,7 @@ function publishTheStory() {
     showToast(errorText, "warning");
     return;
   } else {
-    diagnosticMessageId.innerText = "";
+    diagnosticMessageId.innerText = "Generating content....";
   }
 
   var data = { storyText: speechRecognitionTextAreaId.value };
