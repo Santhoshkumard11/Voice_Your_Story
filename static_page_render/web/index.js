@@ -113,17 +113,14 @@ function updateStoryWordCount() {
 function showToast(text, color) {
   var toastBody = document.getElementById("toastBody");
   toastBody.innerHTML = text;
-
-  var toastDiv = document.getElementById("toastDiv");
-
-  toastDiv.className = `toast align-items-center text-white bg-${color}`;
+  toastDiv.className = `bg-${color}`;
 
   $(".toast").toast("show");
 }
 
 function publishTheStory() {
   var currentDomain = window.location.origin;
-  var urlToHit = `${currentDomain}/api/generate_story`;
+  var urlToHit = `${currentDomain}/api/generate_story?code=gLEk2e_h0lUQ1taT_vS8nVrbfknftPxr2mqW4HGJwoePAzFux-Yvxg==`;
 
   if (speechRecognitionTextAreaId.value.length < MinStoryCharCount) {
     var errorText = ErrorNoCharInStory.replace(
@@ -136,7 +133,7 @@ function publishTheStory() {
   }
 
   var data = { storyText: speechRecognitionTextAreaId.value };
-
+  showToast("Sent the text for story generation!", "success");
   try {
     fetch(urlToHit, {
       method: "POST",
