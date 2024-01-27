@@ -12,12 +12,28 @@ const speechRecognitionTextAreaId = document.getElementById(
   "speechRecognitionTextAreaId"
 );
 const diagnosticMessageId = document.getElementById("diagnosticMessageId");
+const storyDetailsId = document.getElementById("storyDetailsId");
 var TranscribeCounter = 0;
 
 var ErrorNoCharInStory =
   "Type or narrate at least CharCount more characters to your story before submitting";
 
 var MinStoryCharCount = 200;
+
+var storyDetailsTemplate = `
+        <p>Story Title - <story_title> </p>
+        <p>Story Link (might take a while to complete the analysis) - <a href="<story_link>" target="_blank">Link</a> </p>
+        <p>Response Time - <response_time> seconds</p>
+        <p>Total Tokens Used - <total_tokens> </p>
+        <p>Cost - $<cost> </p>`;
+
+var storyDetailsReplaceList = [
+  "story_title",
+  "story_link",
+  "response_time",
+  "total_tokens",
+  "cost",
+];
 
 window.onload = function () {
   var copyrightId = document.getElementById("copyright");
@@ -136,6 +152,7 @@ function publishTheStory() {
 
   var data = { storyText: speechRecognitionTextAreaId.value };
   showToast("Sent the text for story generation!", "success");
+  disableButton("publishButtonId");
   try {
     fetch(urlToHit, {
       method: "POST",
@@ -148,9 +165,14 @@ function publishTheStory() {
         return response.json();
       })
       .then(function (data) {
-        showToast("Submitted story!", "success");
-        console.log("Success:", data);
-        updateStoryUrl(data["story_link"]);
+        diagnosticMessageId.innerText = data["message"];
+        if (data["message"] == "Successfully published the story") {
+          showToast("Submitted story!", "success");
+          console.log("Success:", data);
+          updateStoryDetails(data);
+        } else {
+          showToast(data["message"], "danger");
+        }
       })
       .catch(function (err) {
         console.error("Error:", err);
@@ -161,8 +183,27 @@ function publishTheStory() {
     diagnosticMessageId.innerText = "Unable to generate story!";
     showToast("Unable to generate story!!!", "danger");
   }
+  enableButton("publishButtonId");
 }
 
-function updateStoryUrl(storyLink) {
-  diagnosticMessageId.innerHTML = `<b> <a href="${storyLink}" target="_blank">Story Link</a> </b>`;
+function updateStoryDetails(responseData) {
+  var _storyDetailsTemplate = JSON.parse(JSON.stringify(storyDetailsTemplate));
+  storyDetailsReplaceList.forEach((element) => {
+    _replaceElement = `<${element}>`;
+    _storyDetailsTemplate = _storyDetailsTemplate.replace(
+      _replaceElement,
+      responseData[element]
+    );
+  });
+  storyDetailsId.innerHTML += _storyDetailsTemplate;
+}
+
+function disableButton(id) {
+  var buttonData = document.getElementById(id);
+  buttonData.className += " disabled";
+}
+
+function enableButton(id) {
+  var buttonData = document.getElementById(id);
+  buttonData.className = buttonData.className.replace("disabled", "");
 }

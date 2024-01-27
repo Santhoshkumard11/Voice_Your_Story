@@ -19,10 +19,11 @@ def handle_generate_story(story_text):
 
     logging.info("Got formatted output from llm")
 
-    # use recursion to update the twists in the respective place
-    # use try except to make sure each step is complete and send proper error message to UI
-    # first make things work - hardcode to get the values and publish a story
-    # make things dynamic after - we need to send the story on LinkedIn to make sure we get more followers
+    response_time, total_tokens, cost = (
+        formatted_response.get("response_time"),
+        formatted_response.get("total_tokens"),
+        formatted_response.get("cost"),
+    )
 
     story_title, story_body, genre, tags = (
         formatted_response.get("story_title"),
@@ -79,6 +80,10 @@ def handle_generate_story(story_text):
     return json.dumps(
         {
             "message": "Successfully published the story",
+            "story_title": story_title,
             "story_link": story_url,
+            "response_time": response_time,
+            "total_tokens": total_tokens,
+            "cost": cost,
         }
     )

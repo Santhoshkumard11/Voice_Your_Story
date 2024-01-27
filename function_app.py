@@ -57,7 +57,7 @@ def generate_story(req: func.HttpRequest) -> func.HttpResponse:
 
     except Exception as e:
         response = func.HttpResponse(
-            json.dumps({"message": "Error occurred!"}),
+            json.dumps({"message": "Unable to generate story!"}),
             status_code=400,
         )
         logging.exception("Error occurred")

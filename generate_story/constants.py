@@ -1,6 +1,9 @@
 STORY3_HOST_NAME = "https://story3.com"
 STORY3_API_VERSION = "v2"
-MAX_STORY_TOKEN = 4_000
+MAX_STORY_TOKEN = 4_096
+
+# per 1k tokens
+AZURE_OPENAI_COST = {"prompt": 0.01, "completion": 0.03}
 
 STORY3_API_ENDPOINTS = {
     "create_story": {

@@ -1,7 +1,13 @@
+from time import time
 from openai import AzureOpenAI
 import os
 import logging
-from .constants import MAX_STORY_TOKEN, STORY_OUTPUT_TEMPLATE, PROMPT_TEMPLATE
+from .constants import (
+    MAX_STORY_TOKEN,
+    STORY_OUTPUT_TEMPLATE,
+    PROMPT_TEMPLATE,
+    AZURE_OPENAI_COST,
+)
 
 from .utils import format_llm_output
 
@@ -18,6 +24,7 @@ def create_azure_openai_client():
 
 
 def generate_complete_story_body_from_llm(story_text):
+    start_time = time()
     client = create_azure_openai_client()
     logging.info("Connected to Azure OpenAI Service")
 
@@ -41,11 +48,27 @@ def generate_complete_story_body_from_llm(story_text):
         max_tokens=MAX_STORY_TOKEN,
     )
     response_text = response.choices[0].message.content
-    total_tokens_used = response.usage.total_tokens
-    logging.info(
-        f"Total Tokens used: {total_tokens_used}\nResponse:{response_text[:100]}"
+    (
+        total_tokens_used,
+        prompt_tokens,
+        completion_tokens,
+    ) = (
+        response.usage.total_tokens,
+        response.usage.prompt_tokens,
+        response.usage.completion_tokens,
     )
-
+    end_time = time()
+    formatted_response_time = round(end_time - start_time, 2)
+    logging.info(
+        f"""Response time - {formatted_response_time}s - Total Tokens used: {total_tokens_used}
+        Response:{response_text[:100]}"""
+    )
     response_text = format_llm_output(response_text)
+
+    response_text["total_tokens"] = total_tokens_used
+    response_text["response_time"] = formatted_response_time
+    response_text["cost"] = (prompt_tokens * 0.001) * AZURE_OPENAI_COST.get(
+        "prompt"
+    ) + (completion_tokens * 0.001) * AZURE_OPENAI_COST.get("completion")
 
     return response_text
